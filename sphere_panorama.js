@@ -1,16 +1,16 @@
 /**
- * @overview 3D-box-panorama.
+ * @overview 3D-sphere-panorama.
  * For zoom by mouse scroll "jquery.mousewheel" module is needed.
  *
- * @module box_panorama
+ * @module sphere_panorama
  * @exports Panorama
  * @requires requirejs
  * @requires jquery
  * @requires threejs
  * @requires modernizr
- * @version r2
+ * @version r1
  *
- * @see {@link https://github.com/unclechu/three.js-box-panorama/|GitHub}
+ * @see {@link https://github.com/unclechu/three.js-sphere-panorama/|GitHub}
  * @author Viacheslav Lotsmanov
  * @copyright Based on panorama demo of three.js (http://mrdoob.github.io/three.js/examples/canvas_geometry_panorama.html)
  * @license GPLv3 by Free Software Foundation
@@ -20,6 +20,17 @@ define(['jquery', 'threejs', 'modernizr'],
 /** @lends Panorama */
 function ($, THREE, Modernizr) {
 	var sides = ['right', 'left', 'top', 'bottom', 'back', 'front'];
+
+	// helpers {{{1
+
+	function inherit(proto) {
+		if (Object.create) return Object.create(proto);
+		function F() {}
+		F.prototype = proto;
+		return new F();
+	}
+
+	// helpers }}}1
 
 	/**
 	 * @description You need to set "params" keys "panoramaCode" and "imgPathMask" both or absolute paths to key "sideTextures"
@@ -41,8 +52,7 @@ function ($, THREE, Modernizr) {
 	 * @exception {Panorama~RendererInitError}
 	 */
 	function Panorama($selector, params/*[, callback]*/) {
-		/** @private */
-		var self = this;
+		/** @private */ var self = this;
 
 		/** @private */
 		var private = { // private {{{1
@@ -786,56 +796,49 @@ function ($, THREE, Modernizr) {
 	Panorama.exceptions = {};
 
 	/** @typedef {Error} Panorama~IncorrectArgument */
-	Panorama.exceptions.IncorrectArgument =
-	function IncorrectArgument(message) {
+	Panorama.exceptions.IncorrectArgument = function (message) {
 		Error.call(this);
 		this.name = 'IncorrectArgument';
 		this.message = message || 'Incorrect argument of constructor';
 	};
 
 	/** @typedef {Error} Panorama~RequiredParameter */
-	Panorama.exceptions.RequiredParameter =
-	function RequiredParameter(message) {
+	Panorama.exceptions.RequiredParameter = function (message) {
 		Error.call(this);
 		this.name = 'RequiredParameter';
 		this.message = message || 'Required parameters: "panoramaCode" and "imgPathMask" both or "sideTextures"';
 	};
 
 	/** @typedef {Error} Panorama~RequiredSideTexture */
-	Panorama.exceptions.RequiredSideTexture =
-	function RequiredSideTexture(message) {
+	Panorama.exceptions.RequiredSideTexture = function (message) {
 		Error.call(this);
 		this.name = 'RequiredSideTexture';
 		this.message = message || 'No side texture';
 	};
 
 	/** @typedef {Error} Panorama~NoContainer */
-	Panorama.exceptions.NoContainer =
-	function NoContainer(message) {
+	Panorama.exceptions.NoContainer = function (message) {
 		Error.call(this);
 		this.name = 'NoContainer';
 		this.message = message || 'Attempt to create instance of Panorama without container';
 	};
 
 	/** @typedef {Error} Panorama~ContainerZeroSize */
-	Panorama.exceptions.ContainerZeroSize =
-	function ContainerZeroSize(message) {
+	Panorama.exceptions.ContainerZeroSize = function (message) {
 		Error.call(this);
 		this.name = 'ContainerZeroSize';
 		this.message = message || 'jQuery object of container has no DOM-elements';
 	};
 
 	/** @typedef {Error} Panorama~SinglePanoramaPerContainer */
-	Panorama.exceptions.SinglePanoramaPerContainer =
-	function SinglePanoramaPerContainer(message) {
+	Panorama.exceptions.SinglePanoramaPerContainer = function (message) {
 		Error.call(this);
 		this.name = 'SinglePanoramaPerContainer';
 		this.message = message || 'Attempt to create more than one panoramas in same container';
 	};
 
 	/** @typedef {Error} Panorama~UnknownPrivateVariableName */
-	Panorama.exceptions.UnknownPrivateVariableName =
-	function UnknownPrivateVariableName(message, varName) {
+	Panorama.exceptions.UnknownPrivateVariableName = function (message, varName) {
 		Error.call(this);
 		this.name = 'UnknownPrivateVariableName';
 		this.message = message || 'Unknown name of private variable'+
@@ -843,35 +846,25 @@ function ($, THREE, Modernizr) {
 	};
 
 	/** @typedef {Error} Panorama~HandlerCannotFoundThePanorama */
-	Panorama.exceptions.HandlerCannotFoundThePanorama =
-	function HandlerCannotFoundThePanorama(message) {
+	Panorama.exceptions.HandlerCannotFoundThePanorama = function (message) {
 		Error.call(this);
 		this.name = 'HandlerCannotFoundThePanorama';
 		this.message = message || 'Panorama removed but handler still triggers';
 	};
 
 	/** @typedef {Error} Panorama~NoSupportedRenderer */
-	Panorama.exceptions.NoSupportedRenderer =
-	function NoSupportedRenderer(message) {
+	Panorama.exceptions.NoSupportedRenderer = function (message) {
 		Error.call(this);
 		this.name = 'NoSupportedRenderer';
 		this.message = message || 'Your browser must support WebGL or Canvas';
 	};
 
 	/** @typedef {Error} Panorama~RendererInitError */
-	Panorama.exceptions.RendererInitError =
-	function RendererInitError(message) {
+	Panorama.exceptions.RendererInitError = function (message) {
 		Error.call(this);
 		this.name = 'RendererInitError';
 		this.message = message || 'Cannot initialize THREE-renderer';
 	};
-
-	function inherit(proto) {
-		if (Object.create) return Object.create(proto);
-		function F() {}
-		F.prototype = proto;
-		return new F();
-	}
 
 	for (var key in Panorama.exceptions) {
 		Panorama.exceptions[key].prototype = inherit(Error.prototype);
@@ -908,8 +901,7 @@ function ($, THREE, Modernizr) {
 	 * @param {Panorama} panorama Instance of Panorama
 	 * @this {window}
 	 */
-	Panorama.handlers.resizeHandler =
-	function resizeHandler(panorama) {
+	Panorama.handlers.resizeHandler = function (panorama) {
 		panorama.__getter('camera').aspect =
 			panorama.$container.width() / panorama.$container.height();
 		panorama.__getter('camera').updateProjectionMatrix();
@@ -932,8 +924,7 @@ function ($, THREE, Modernizr) {
 	 * @typedef {function} Panorama~mouseDownHandler
 	 * @this {DOM} $container
 	 */
-	Panorama.handlers.mouseDownHandler =
-	function mouseDownHandler(event) {
+	Panorama.handlers.mouseDownHandler = function (event) {
 		var panorama = getPanorama.call(this);
 
 		panorama.__setter('holdByUser', true);
@@ -951,8 +942,7 @@ function ($, THREE, Modernizr) {
 	 * @typedef {function} Panorama~mouseMoveHandler
 	 * @this {DOM} $container
 	 */
-	Panorama.handlers.mouseMoveHandler =
-	function mouseMoveHandler(event) {
+	Panorama.handlers.mouseMoveHandler = function (event) {
 		var panorama = getPanorama.call(this);
 
 		if (panorama.__getter('holdByUser') === true && panorama.__getter('mouseDownState')) {
@@ -975,8 +965,7 @@ function ($, THREE, Modernizr) {
 	 * @typedef {function} Panorama~mouseUpHandler
 	 * @this {DOM} $container
 	 */
-	Panorama.handlers.mouseUpHandler =
-	function mouseUpHandler(event) {
+	Panorama.handlers.mouseUpHandler = function (event) {
 		var panorama = getPanorama.call(this);
 
 		panorama.__setter('mouseDownState', undefined);
@@ -989,8 +978,7 @@ function ($, THREE, Modernizr) {
 	 * @typedef {function} Panorama~mouseWheelHandler
 	 * @this {DOM} $container
 	 */
-	Panorama.handlers.mouseWheelHandler =
-	function mouseWheelHandler(event) {
+	Panorama.handlers.mouseWheelHandler = function (event) {
 		var panorama = getPanorama.call(this);
 
 		if (event.deltaY == 1) {
@@ -1018,8 +1006,7 @@ function ($, THREE, Modernizr) {
 	 * @typedef {function} Panorama~touchStartHandler
 	 * @this {DOM} $container
 	 */
-	Panorama.handlers.touchStartHandler =
-	function touchStartHandler(event) {
+	Panorama.handlers.touchStartHandler = function (event) {
 		var panorama = getPanorama.call(this);
 
 		panorama.__setter('holdByUser', true);
@@ -1039,8 +1026,7 @@ function ($, THREE, Modernizr) {
 	 * @typedef {function} Panorama~touchMoveHandler
 	 * @this {DOM} $container
 	 */
-	Panorama.handlers.touchMoveHandler =
-	function touchMoveHandler(event) {
+	Panorama.handlers.touchMoveHandler = function (event) {
 		var panorama = getPanorama.call(this);
 
 		if (
@@ -1067,8 +1053,7 @@ function ($, THREE, Modernizr) {
 	 * @typedef {function} Panorama~touchEndHandler
 	 * @this {DOM} $container
 	 */
-	Panorama.handlers.touchEndHandler =
-	function touchEndHandler(event) {
+	Panorama.handlers.touchEndHandler = function (event) {
 		var panorama = getPanorama.call(this);
 
 		panorama.__setter('touchStartState', undefined);
@@ -1085,5 +1070,3 @@ function ($, THREE, Modernizr) {
 	return Panorama;
 
 });
-
-// vim: set noet ts=4 sts=4 sw=4 fenc=utf-8 foldmethod=marker :
