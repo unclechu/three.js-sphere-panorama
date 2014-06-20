@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Three.js Sphere Panorama demo-example #1</title>
+	<style type="text/css" rel="stylesheet">
+		#panorama { width: 640px; height: 480px; background: silver; }
+	</style>
+	<script src="./require.js"></script>
+	<script>
+		requirejs.config({
+			paths: {
+				jquery: 'http://code.jquery.com/jquery-2.1.1.min',
+			},
+		});
+
+		require(['jquery', 'sphere_panorama'], function ($, Panorama) {
+			$(function domReady() {
+				new Panorama(
+					$('#panorama'),
+					{ textureUrl: 'panorama.jpg' },
+					function (err) {
+						if (err) throw err;
+						this.animationLoop();
+					}
+				);
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<h1>Three.js Sphere Panorama demo-example #1</h1>
+	<div id="panorama"></div>
+</body>
+</html>
