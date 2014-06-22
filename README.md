@@ -1,4 +1,4 @@
-3D-sphere-panorama engine (r1)
+3D-sphere-panorama engine (r2)
 ==============================
 
 [RequireJS](http://requirejs.org/) module based on [three.js](http://threejs.org/).
