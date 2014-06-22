@@ -8,7 +8,7 @@
  * @requires jquery
  * @requires threejs
  * @requires modernizr
- * @version r2
+ * @version r3
  *
  * @see {@link https://github.com/unclechu/three.js-sphere-panorama/|GitHub}
  * @author Viacheslav Lotsmanov
@@ -219,7 +219,7 @@ function ($, THREE, Modernizr) {
 		 * @returns {*} Private variable value
 		 * @this {Panorama}
 		 */
-		this.__getter = function getter(name) {
+		this.__getter = function (name) {
 			if (name in private) {
 				return private[name];
 			} else {
@@ -235,7 +235,7 @@ function ($, THREE, Modernizr) {
 		 * @exception {Panorama~UnknownPrivateVariableName}
 		 * @this {Panorama}
 		 */
-		this.__setter = function setter(name, val) {
+		this.__setter = function (name, val) {
 			if (name in private) {
 				private[name] = val;
 			} else {
@@ -250,7 +250,7 @@ function ($, THREE, Modernizr) {
 		 * @instance
 		 * @this {Panorama}
 		 */
-		this.__destroy = function __destroy() {
+		this.__destroy = function () {
 			$selector = undefined;
 			params = undefined;
 			for (var key in private) {
@@ -453,7 +453,7 @@ function ($, THREE, Modernizr) {
 		 * @type function
 		 * @this {window}
 		 */
-		this.resizeHandlerWrapper = function resizeHandlerWrapper() {
+		this.resizeHandlerWrapper = function () {
 			self.handlers.resizeHandler.call(this, self);
 		};
 
@@ -534,8 +534,7 @@ function ($, THREE, Modernizr) {
 	 * @static
 	 * @returns {number}
 	 */
-	Panorama.prototype.zoom =
-	function zoom(percent, justCalculate) {
+	Panorama.prototype.zoom = function (percent, justCalculate) {
 		if (percent < 0) percent = 0;
 		if (percent > 100) percent = 100;
 		percent = 100 - percent; // invert value
@@ -563,8 +562,7 @@ function ($, THREE, Modernizr) {
 	 * @public
 	 * @static
 	 */
-	Panorama.prototype.animationLoop =
-	function animationLoop() {
+	Panorama.prototype.animationLoop = function () {
 		var self = this;
 
 		requestAnimationFrame(function (time) {
@@ -588,8 +586,7 @@ function ($, THREE, Modernizr) {
 	 * @public
 	 * @static
 	 */
-	Panorama.prototype.draw =
-	function draw() {
+	Panorama.prototype.draw = function () {
 		if (this.__getter('holdByUser') === false)
 			this.__setter('lon', this.__getter('lon') + 0.1);
 
@@ -616,8 +613,7 @@ function ($, THREE, Modernizr) {
 	 * @public
 	 * @static
 	 */
-	Panorama.prototype.destroy =
-	function destroy() {
+	Panorama.prototype.destroy = function () {
 		this.$container.unbind('.' + this.panoramaId);
 		$(window).unbind('.' + this.panoramaId);
 		this.$panoramaWrapper.remove();
@@ -651,8 +647,7 @@ function ($, THREE, Modernizr) {
 	 * @exception {Error} Any exception that in "exception" argument
 	 * @returns {boolean} Returns true or throws exception
 	 */
-	Panorama.prototype.makeError =
-	function makeError(exception) {
+	Panorama.prototype.makeError = function (exception) {
 		var self = this;
 		if (this.__getter('callback')) {
 			setTimeout(function () {
